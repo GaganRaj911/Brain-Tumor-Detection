@@ -1,38 +1,26 @@
-import os
-import pandas as pd
+import numpy as np
 from skimage.feature import hog
-from skimage.io import imread
 
-# Define folders (Change these to your actual paths)
-tumor_folder = "C:/GAGAN/Programming/Python ML/brain_tumor_dataset/Resized yes"
-non_tumor_folder = "C:/GAGAN/Programming/Python ML/brain_tumor_dataset/Resized no"
+def extract_hog_features(data, pixels_per_cell=(8, 8), cells_per_block=(2, 2), orientations=9):
+    hog_features = []
 
-# HOG parameters
-HOG_PIXELS_PER_CELL = (8, 8)
-HOG_CELLS_PER_BLOCK = (2, 2)
-HOG_ORIENTATIONS = 9
+    for img in data:
+        features = hog(img,
+                       orientations=orientations,
+                       pixels_per_cell=pixels_per_cell,
+                       cells_per_block=cells_per_block,
+                       block_norm='L2-Hys')
+        hog_features.append(features)
 
-# Function to extract HOG features
-def extract_hog(image):
-    features = hog(image, orientations=HOG_ORIENTATIONS, pixels_per_cell=HOG_PIXELS_PER_CELL,
-                   cells_per_block=HOG_CELLS_PER_BLOCK, block_norm='L2-Hys')
-    return features
+    return np.array(hog_features)
 
-# Process all images
-data = []
+if __name__=='__main__':
+    data = np.load("data.npy")   
 
-for folder, label in [(tumor_folder, 1), (non_tumor_folder, 0)]:  # 1 = Tumor, 0 = No Tumor
-    for filename in os.listdir(folder):
-        image_path = os.path.join(folder, filename)
-        image = imread(image_path, as_gray=True)  # Load grayscale image
-        
-        hog_features = extract_hog(image)
-        data.append([filename, label] + hog_features.tolist())
+    hog_features = extract_hog_features(data)
 
-# Convert to DataFrame
-columns = ["Filename", "Label"] + [f"HOG_{i}" for i in range(len(hog_features))]
-df = pd.DataFrame(data, columns=columns)
+    print("HOG feature shape:", hog_features.shape)
 
-# Save to CSV (single file)
-df.to_csv("hog_features.csv", index=False)
-print("HOG features saved to hog_features.csv")
+    np.save("hog_features.npy", hog_features)
+
+    print("Done")
