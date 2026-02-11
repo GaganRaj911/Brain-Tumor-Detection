@@ -20,7 +20,6 @@ This approach is computationally lightweight and suitable for systems with limit
 - Image size after preprocessing: **128 × 128**
 
 > ⚠️ The dataset is **not included** in this repository.  
-> Please refer to the project report for dataset source and details.
 
 ---
 
