@@ -94,7 +94,7 @@ brain-tumor-detection/
 │
 ├── src/
 │ ├── preprocess.py           # Image preprocessing
-│ ├── features.py        # HOG feature extraction
+│ ├── features.py             # HOG feature extraction
 │ ├── predict.py              # Single image prediction
 │ └── Algorithms/
 │   ├── knn.py 
